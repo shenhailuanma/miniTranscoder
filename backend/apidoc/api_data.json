@@ -1,0 +1,24 @@
+[
+  {
+    "type": "POST",
+    "url": "/api/jobs",
+    "title": "02-CreateJob",
+    "name": "CreateJob",
+    "group": "API",
+    "description": "<p>Create transcode job</p>",
+    "version": "0.0.0",
+    "filename": "router/router.go",
+    "groupTitle": "API"
+  },
+  {
+    "type": "GET",
+    "url": "/api/jobs",
+    "title": "01-GetJobList",
+    "name": "GetJobList",
+    "group": "API",
+    "description": "<p>Get all jobs</p>",
+    "version": "0.0.0",
+    "filename": "router/router.go",
+    "groupTitle": "API"
+  }
+]
