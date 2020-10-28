@@ -13,6 +13,8 @@ func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) error {
 
 	logrus.Info("CreateTranscodeJob, cmdString:", cmdString)
 
+	// create job
+
 	// run job command
 	return runJobCommand(cmdString)
 }

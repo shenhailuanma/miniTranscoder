@@ -2,10 +2,19 @@
   {
     "type": "POST",
     "url": "/api/jobs",
-    "title": "02-CreateJob",
+    "title": "02-CreateTranscodeJob",
     "name": "CreateJob",
     "group": "API",
     "description": "<p>Create transcode job</p>",
+    "parameter": {
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n    \"inputs\":[\n        \"/Users/xuzhang/video/Wonders_of_Nature.mp4\"\n    ],\n    \"outputs\":[\n        {\n            \"output\": \"/Users/xuzhang/video/Wonders_of_Nature.output.mp4\"\n        }\n    ]\n}",
+          "type": "json"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "router/router.go",
     "groupTitle": "API"

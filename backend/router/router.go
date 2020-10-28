@@ -29,6 +29,16 @@ func Run(listenPort string) error {
 		 * @apiGroup API
 		 * @apiDescription Create transcode job
 		 * @apiParamExample {json} Request-Example:
+		{
+		    "inputs":[
+		        "/video/Wonders_of_Nature.mp4"
+		    ],
+		    "outputs":[
+		        {
+		            "output": "/video/Wonders_of_Nature.output.mp4"
+		        }
+		    ]
+		}
 		 *
 		 */
 		apiGroup.POST("/job/transcode", controllers.CreateTranscodeJobController)
