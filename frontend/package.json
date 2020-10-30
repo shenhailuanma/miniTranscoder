@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "element-ui": "^2.8.2",
-    "ffmpeg.js": "^3.1.9001",
     "file-saver": "^2.0.2",
     "memfs": "^2.15.0",
     "video.js": "^7.5.4",

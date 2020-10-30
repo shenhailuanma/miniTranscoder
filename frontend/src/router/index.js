@@ -1,10 +1,10 @@
 import Vue from "vue";
 import Router from "vue-router";
-import HelloWorld from "@/components/HelloWorld";
-import Snapshot from "@/components/Snapshot";
+import Home from "@/components/Home";
+// import Snapshot from "@/components/Snapshot";
 import Transcode from "@/components/Transcode";
-import Video2gif from "@/components/Video2gif";
-import Test from "@/components/Test";
+// import Video2gif from "@/components/Video2gif";
+// import Test from "@/components/Test";
 
 Vue.use(Router);
 
@@ -12,28 +12,13 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "HelloWorld",
-      component: HelloWorld
+      name: "Home",
+      component: Home
     },
     {
-      path: "/snapshot",
-      name: "Snapshot",
-      component: Snapshot
-    },
-    {
-      path: "/transcode",
-      name: "Transcode",
+      path: "/video",
+      name: "video",
       component: Transcode
-    },
-    {
-      path: "/video2gif",
-      name: "Video2gif",
-      component: Video2gif
-    },
-    {
-      path: "/test",
-      name: "Test",
-      component: Test
     }
   ]
 });
