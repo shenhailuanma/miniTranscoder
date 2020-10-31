@@ -10,6 +10,7 @@
     "build": "node --max_old_space_size=81920 build/build.js"
   },
   "dependencies": {
+    "axios": "^0.21.0",
     "element-ui": "^2.8.2",
     "file-saver": "^2.0.2",
     "memfs": "^2.15.0",
