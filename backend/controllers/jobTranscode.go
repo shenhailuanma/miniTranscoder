@@ -25,7 +25,7 @@ func CreateTranscodeJobController(c *gin.Context)  {
 		return
 	}
 
-	err = service.CreateTranscodeJob(request)
+	jobID, err := service.CreateTranscodeJob(request)
 	if err != nil {
 		response.Status = http.StatusBadRequest
 		response.Msg = err.Error()
@@ -33,6 +33,8 @@ func CreateTranscodeJobController(c *gin.Context)  {
 		c.JSON(response.Status, &response)
 		return
 	}
+
+	response.Data = jobID
 
 	c.JSON(response.Status, &response)
 }

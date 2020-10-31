@@ -28,7 +28,7 @@ func FileUploadController(c *gin.Context) {
 	ok := c.SaveUploadedFile(file, path)
 	if ok != nil {
 		response.Status = http.StatusBadRequest
-		response.Msg = err.Error()
+		response.Msg = "save upload file failed"
 		logrus.Error("FileUploadController, SaveUploadedFile error:", response.Msg)
 		c.JSON(response.Status, &response)
 		return

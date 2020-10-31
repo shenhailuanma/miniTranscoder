@@ -7,6 +7,7 @@ const ConfigServicePathWeb = ConfigServicePathBase + "/www"
 const ConfigServicePathBin = ConfigServicePathBase + "/bin"
 
 // db
+const ConfigServiceSqliteDir = ConfigServicePathBase + "/db"
 const ConfigServiceSqlitePath = ConfigServicePathBase + "/db/mt.sqlite"
 const ConfigDatabaseUrl = ""
 

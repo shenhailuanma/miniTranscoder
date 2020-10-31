@@ -170,3 +170,13 @@ func LinkFileSoft(src string, dst string) error {
 	command := exec.Command("ln", "-sf", src, dst)
 	return command.Run()
 }
+
+func FileSize(filePath string) int64 {
+	if CheckFileExist(filePath) {
+		stat, err := os.Stat(filePath)
+		if err == nil {
+			return stat.Size()
+		}
+	}
+	return 0
+}
