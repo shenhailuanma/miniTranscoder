@@ -19,20 +19,20 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="SourceName"
           label="Name">
         </el-table-column>
         <el-table-column
-          prop="size"
+          prop="SourceSize"
           label="Size"
           width="100">
         </el-table-column>
         <el-table-column
-          prop="progress"
+          prop="Progress"
           label="Progress"
           width="240">
           <template slot-scope="scope">
-            <el-progress :percentage="100" :stroke-width="12" status="success"></el-progress>
+            <el-progress :percentage="scope.row.Progress" :stroke-width="12" status="success"></el-progress>
           </template>
         </el-table-column>
         <!--        <el-table-column-->
