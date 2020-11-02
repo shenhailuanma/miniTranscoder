@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/shenhailuanma/ffmpeg-command-generator/ffmpeg"
 	"github.com/shenhailuanma/miniTranscoder/config"
 	"github.com/shenhailuanma/miniTranscoder/models"
@@ -11,6 +12,9 @@ import (
 
 func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (int, error) {
 	// todo: params check
+	if len(request.Inputs) == 0 {
+		return 0, errors.New("no input file")
+	}
 
 	// create job
 	var job = models.Job{}
@@ -29,6 +33,7 @@ func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (int, error) {
 	} else {
 		job.Output = request.Outputs[0].Output
 	}
+	
 
 	// generate ffmpeg command
 	cmdString, err := ffmpeg.FFmpegTranscode(request)
