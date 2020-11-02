@@ -3,7 +3,7 @@ package templates
 
 const TranscodeTemplate = `
 {{- range $inputIndex, $inputOne := .Inputs}}
--i {{$inputOne}} 
+-i '{{$inputOne}}'
 {{- end }}
 
 {{- range $outputIndex, $outputOne := .Outputs}}
@@ -39,6 +39,6 @@ const TranscodeTemplate = `
 	{{- if $outputOne.Format}}
 		-f {{$outputOne.Format}}
 	{{- end}}
-		-y {{$outputOne.Output}}
+		-y '{{$outputOne.Output}}'
 {{- end }}
 `

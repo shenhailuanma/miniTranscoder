@@ -38,10 +38,14 @@ github.com/mattn/go-sqlite3
 github.com/modern-go/concurrent
 # github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
 github.com/modern-go/reflect2
-# github.com/shenhailuanma/ffmpeg-command-generator v1.0.0
+# github.com/shenhailuanma/ffmpeg-command-generator v1.0.2
 ## explicit
 github.com/shenhailuanma/ffmpeg-command-generator/ffmpeg
 github.com/shenhailuanma/ffmpeg-command-generator/ffmpeg/templates
+# github.com/shenhailuanma/goutils v1.2.4
+## explicit
+github.com/shenhailuanma/goutils/md5
+github.com/shenhailuanma/goutils/random
 # github.com/sirupsen/logrus v1.7.0
 ## explicit
 github.com/sirupsen/logrus

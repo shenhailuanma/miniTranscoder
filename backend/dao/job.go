@@ -48,3 +48,11 @@ func GetJobInfo(jobID int) (models.Job, error) {
 	err = db.Table("jobs").Where("id=?", jobID).First(&job).Error
 	return job, err
 }
+
+func UpdateJobProgress(jobID, progress int) error  {
+	db, err := DatabaseOpen()
+	if err != nil {
+		return err
+	}
+	return db.Table("jobs").Where("id=?", jobID).Update("progress", progress).Error
+}
