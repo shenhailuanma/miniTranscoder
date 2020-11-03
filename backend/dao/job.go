@@ -12,7 +12,7 @@ func PrepareJobsTable() error {
 	return db.AutoMigrate(&models.Job{})
 }
 
-func GetJobs() ([]models.Job, error) {
+func GetJobs(page int, size int) ([]models.Job, error) {
 	var jobs = []models.Job{}
 
 	db, err := DatabaseOpen()
@@ -20,7 +20,20 @@ func GetJobs() ([]models.Job, error) {
 		return jobs, err
 	}
 
-	err = db.Table("jobs").Find(&jobs).Error
+	if page < 0 {
+		page = 0
+	}
+
+	if size <= 0 && size != -1 {
+		size = 25
+	}
+
+	var offset = 0
+	if page > 0 && size > 0{
+		offset = size * page
+	}
+
+	err = db.Table("jobs").Order("id desc").Offset(offset).Limit(size).Find(&jobs).Error
 
 	return jobs, err
 }
@@ -55,4 +68,12 @@ func UpdateJobProgress(jobID, progress int) error  {
 		return err
 	}
 	return db.Table("jobs").Where("id=?", jobID).Update("progress", progress).Error
+}
+
+func UpdateJobStatus(jobID int, status string) error  {
+	db, err := DatabaseOpen()
+	if err != nil {
+		return err
+	}
+	return db.Table("jobs").Where("id=?", jobID).Update("status", status).Error
 }

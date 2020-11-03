@@ -9,24 +9,13 @@ import (
 func Run(listenPort string) error {
 	r := gin.Default()
 
-	// web ui sttic files
-	//r.StaticFS("/static", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc"))
+	// web ui static files
+	r.StaticFile("/index.html", "/Users/xuzhang/gitbase/miniTranscoder/frontend/dist/index.html")
+	r.StaticFile("/", "/Users/xuzhang/gitbase/miniTranscoder/frontend/dist/index.html")
+	r.StaticFS("/static", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/frontend/dist/static"))
 
-	r.StaticFile("/index.html", "/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/index.html")
-	r.StaticFile("/", "/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/index.html")
-
-
-	r.StaticFS("/css", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/css"))
-	r.StaticFS("/fonts", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/fonts"))
-	r.StaticFS("/img", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/img"))
-	r.StaticFS("/locales", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/locales"))
-	r.StaticFS("/utils", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/utils"))
-	r.StaticFS("/vendor", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/vendor"))
-	r.StaticFile("/api_data.js", "/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/api_data.js")
-	r.StaticFile("/api_data.json", "/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/api_data.json")
-	r.StaticFile("/api_project.js", "/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/api_project.js")
-	r.StaticFile("/api_project.json", "/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/api_project.json")
-	r.StaticFile("/main.js", "/Users/xuzhang/gitbase/miniTranscoder/backend/apidoc/main.js")
+	// web ui download file
+	r.StaticFS("/miniTranscoder", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/miniTranscoder"))
 
 	// healthz
 	//r.GET("/healthz", controllers.HealthzController)

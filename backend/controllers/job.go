@@ -6,6 +6,7 @@ import (
 	"github.com/shenhailuanma/miniTranscoder/service"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 )
 
 func GetJobsController(c *gin.Context)  {
@@ -13,7 +14,10 @@ func GetJobsController(c *gin.Context)  {
 	response.Status = http.StatusOK
 	response.Msg = ""
 
-	jobs, err := service.GetJobList()
+	page, _ := strconv.Atoi(c.Query("page"))
+	size, _ := strconv.Atoi(c.Query("size"))
+
+	jobs, err := service.GetJobList(page, size)
 	if err != nil {
 		response.Status = http.StatusBadRequest
 		response.Msg = err.Error()

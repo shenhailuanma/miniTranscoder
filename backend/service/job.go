@@ -28,8 +28,8 @@ func init() {
 	logrus.Info("service.job init done")
 }
 
-func GetJobList() ([]models.Job, error) {
-	return dao.GetJobs()
+func GetJobList(page int, size int) ([]models.Job, error) {
+	return dao.GetJobs(page, size)
 }
 
 func CreateJob(job models.Job) (int, error) {
@@ -52,12 +52,20 @@ func loopDoJob() {
 
 		logrus.Info("loopDoJob, Command:", job.Command)
 
+		// update status
+		dao.UpdateJobStatus(jobID, "doing")
+
 		existCode, err := runJob(jobID, job.Command)
 		if err != nil {
 			logrus.Error("loopDoJob, GetJobInfo error:", err.Error())
+			dao.UpdateJobStatus(jobID, "failed")
 			continue
 		}
 		logrus.Info("loopDoJob, job:", jobID, " over, exist code:", existCode)
+		// update progress
+		dao.UpdateJobProgress(jobID, 100)
+		// update status
+		dao.UpdateJobStatus(jobID, "success")
 	}
 }
 
