@@ -32,25 +32,30 @@
           label="Progress"
           width="240">
           <template slot-scope="scope">
-            <el-progress :percentage="scope.row.Progress" :stroke-width="12" status="success"></el-progress>
+            <el-progress v-if="scope.row.Status === 'success'" :percentage="scope.row.Progress" :stroke-width="12"
+                         status="success"></el-progress>
+            <el-progress v-else-if="scope.row.Status === 'failed'" :percentage="scope.row.Progress" :stroke-width="12"
+                         status="exception"></el-progress>
+            <el-progress v-else :percentage="scope.row.Progress" :stroke-width="12"></el-progress>
+
           </template>
         </el-table-column>
-        <!--        <el-table-column-->
-        <!--          prop="status"-->
-        <!--          label="Status"-->
-        <!--          width="160">-->
-        <!--        </el-table-column>-->
         <el-table-column
           prop="action"
           label="Action"
           width="180">
           <template slot-scope="scope">
             <el-button circle size="mini" type="warning" icon="el-icon-tickets"></el-button>
-            <el-button circle size="mini" type="primary" icon="el-icon-download"></el-button>
-            <el-button circle size="mini" type="success" icon="el-icon-caret-right"></el-button>
+            <el-button circle size="mini" type="primary" icon="el-icon-download" @click="downloadFile(scope.row)"></el-button>
+            <el-button circle size="mini" type="success" icon="el-icon-caret-right" @click="handlePlayVideoSelect(scope.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="1000">
+      </el-pagination>
     </el-card>
 
     <el-dialog
@@ -59,7 +64,7 @@
       :before-close="handleUploadDialogClose">
       <el-upload
         class="upload-file"
-        action="http://localhost:8080/api/file/upload"
+        action="/api/file/upload"
         accept="video/*"
         :on-preview="handleOnPreview"
         :on-remove="handleOnRemove"
@@ -67,7 +72,7 @@
         :before-remove="beforeRemove"
         multiple
         :file-list="fileList">
-        <el-button size="small" type="primary">点击上传</el-button>
+        <el-button size="small" type="primary">Select File</el-button>
       </el-upload>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleUploadDialogClose">Cannel</el-button>
@@ -75,40 +80,39 @@
       </span>
     </el-dialog>
 
+    <el-dialog :visible.sync="dialogPlayVideoVisible"
+               width="90%"
+               :before-close="handlePlayVideoDialogClose">
+      <video v-if="playVideoUrl" class="vjs-layout-small" :src="playVideoUrl" controls="controls"></video>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-
+import FileSaver from "file-saver";
 import {apiGetJobList, apiCreateJobTranscode} from '@/api/job';
+import {objectDeepCopy} from '@/utils/utils';
 
 export default {
   name: "Home",
   data() {
     return {
       msg: "Welcome to Mini Transcoder",
-      jobList: [
-        {
-          name: "test1",
-          status: "done",
-        },
-        {
-          name: "test1"
-        }, {
-          name: "test1"
-        }, {
-          name: "test1"
-        }
-      ],
+      jobList: [],
       dialogUploadVisible: false,
-      fileList: []
+      dialogPlayVideoVisible:false,
+      fileList: [],
+      heartbeatTimer: null,
+      playVideoUrl:""
     };
   },
   methods: {
     prepareData() {
       apiGetJobList().then(response => {
         console.log("prepareData, apiGetJobList response:", response);
-        this.jobList = response.data;
+        this.jobList = objectDeepCopy(response.data);
+        this.outputVideoUrl = this.jobList[0].Output;
       }).catch(err => {
         console.log("prepareData, apiGetJobList err:", err);
       })
@@ -144,7 +148,7 @@ export default {
     handleUploadJobSubmit() {
       console.log("handleUploadJobSubmit, fileList:", this.fileList);
 
-      for (let i=0; i < this.fileList.length; i++) {
+      for (let i = 0; i < this.fileList.length; i++) {
         let jobData = {};
         jobData.inputs = [];
         jobData.inputs.push(this.fileList[i].name);
@@ -160,11 +164,35 @@ export default {
       }
 
       this.dialogUploadVisible = false;
+    },
+    handlePlayVideoSelect(row) {
+      this.dialogPlayVideoVisible = true;
+      this.playVideoUrl = row.Output;
+    },
+    handlePlayVideoDialogClose() {
+      this.dialogPlayVideoVisible = false;
+      this.playVideoUrl = "";
+    },
+    downloadFile(row) {
+      console.log("downloadFile");
+      // let blob = new Blob(row.Output, {
+      //   type: "application/octet-stream;charset=utf-8",
+      // });
+      FileSaver.saveAs(row.Output, row.SourceName);
     }
   },
   mounted() {
     this.prepareData();
-  }
+
+    // init cron job
+    this.heartbeatTimer = setInterval(() => {
+      // console.log("Heart click");
+      this.prepareData();
+    }, 1500);
+  },
+  beforeDestroy: function () {
+    clearInterval(this.heartbeatTimer);
+  },
 }
 </script>
 

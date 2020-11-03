@@ -14,6 +14,10 @@ module.exports = {
       "/api": {
         target: "http://127.0.0.1:9000",
         changeOrigin: true
+      },
+      "/miniTranscoder": {
+        target: "http://127.0.0.1:9000",
+        changeOrigin: true
       }
     },
 
