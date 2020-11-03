@@ -1,22 +1,28 @@
 <template>
   <div>
-    <h1 style="text-align: center;">{{ msg }}</h1>
-    <el-card class="box-card" shadow="never">
-      <!--  upload button-->
-      <el-button type="primary" size="small" @click="showUploadDialog">Upload</el-button>
-    </el-card>
+    <h2 style="text-align: center;">{{ msg }}</h2>
+
+    <!--  upload button-->
+    <div style="width:100px;padding:10px">
+      <el-button type="primary" size="small" @click="showUploadDialog" style="width:100px;border:20px;">Upload
+      </el-button>
+    </div>
 
 
-    <br>
     <el-card class="box-card">
       <!--  uploaded file job list -->
       <el-table
         :data="jobList"
         style="width: 100%"
+        size="small"
         @selection-change="handleJobListSelectionChange">
         <el-table-column
           type="selection"
-          width="55">
+          width="50">
+        </el-table-column>
+        <el-table-column
+          type="index"
+          width="40">
         </el-table-column>
         <el-table-column
           prop="SourceName"
@@ -45,16 +51,19 @@
           label="Action"
           width="180">
           <template slot-scope="scope">
-            <el-button circle size="mini" type="warning" icon="el-icon-tickets"></el-button>
-            <el-button circle size="mini" type="primary" icon="el-icon-download" @click="downloadFile(scope.row)"></el-button>
-            <el-button circle size="mini" type="success" icon="el-icon-caret-right" @click="handlePlayVideoSelect(scope.row)"></el-button>
+            <!-- <el-button circle size="mini" type="warning" icon="el-icon-tickets"></el-button>-->
+            <el-button circle size="mini" type="primary" icon="el-icon-download"
+                       @click="downloadFile(scope.row)"></el-button>
+            <el-button circle size="mini" type="warning" icon="el-icon-caret-right"
+                       @click="handlePlayVideoSelect(scope.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="1000">
+        :page-size="pageSize"
+        :total="jobCount" style="text-align: center;" @current-change="handelCurrentPageChange">
       </el-pagination>
     </el-card>
 
@@ -81,9 +90,9 @@
     </el-dialog>
 
     <el-dialog :visible.sync="dialogPlayVideoVisible"
-               width="90%"
+               width="60%"
                :before-close="handlePlayVideoDialogClose">
-      <video v-if="playVideoUrl" class="vjs-layout-small" :src="playVideoUrl" controls="controls"></video>
+      <video v-if="playVideoUrl" class="avatar" :src="playVideoUrl" controls="controls"></video>
     </el-dialog>
 
   </div>
@@ -91,7 +100,7 @@
 
 <script>
 import FileSaver from "file-saver";
-import {apiGetJobList, apiCreateJobTranscode} from '@/api/job';
+import {apiGetJobList, apiCreateJobTranscode, apiGetJobsCount} from '@/api/job';
 import {objectDeepCopy} from '@/utils/utils';
 
 export default {
@@ -101,20 +110,31 @@ export default {
       msg: "Welcome to Mini Transcoder",
       jobList: [],
       dialogUploadVisible: false,
-      dialogPlayVideoVisible:false,
+      dialogPlayVideoVisible: false,
       fileList: [],
       heartbeatTimer: null,
-      playVideoUrl:""
+      playVideoUrl: "",
+      pageSize: 10,
+      jobCount: 100,
+      currentPage: 0
     };
   },
   methods: {
     prepareData() {
-      apiGetJobList().then(response => {
+      // get job list
+      apiGetJobList(this.pageSize, this.currentPage - 1).then(response => {
         console.log("prepareData, apiGetJobList response:", response);
         this.jobList = objectDeepCopy(response.data);
         this.outputVideoUrl = this.jobList[0].Output;
       }).catch(err => {
         console.log("prepareData, apiGetJobList err:", err);
+      })
+
+      // get jobs count
+      apiGetJobsCount().then(response => {
+        this.jobCount = response.data;
+      }).catch(err => {
+        console.log("prepareData, apiGetJobsCount err:", err);
       })
     },
     handleJobListSelectionChange(value) {
@@ -174,11 +194,12 @@ export default {
       this.playVideoUrl = "";
     },
     downloadFile(row) {
-      console.log("downloadFile");
-      // let blob = new Blob(row.Output, {
-      //   type: "application/octet-stream;charset=utf-8",
-      // });
+      console.log("downloadFile, name:", row.SourceName);
       FileSaver.saveAs(row.Output, row.SourceName);
+    },
+    handelCurrentPageChange(page) {
+      console.log("handelCurrentPageChange, page:", page);
+      this.currentPage = page;
     }
   },
   mounted() {
@@ -197,5 +218,8 @@ export default {
 </script>
 
 <style scoped>
-
+.avatar {
+  width: 100%;
+  display: block;
+}
 </style>

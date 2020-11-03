@@ -1,8 +1,19 @@
 /* eslint-disable quotes */
 import request from '@/utils/request'
 
-export const apiGetJobList = () => {
-  let url = `/api/jobs`;
+export const apiGetJobList = (size, page) => {
+  let url = `/api/jobs?size=${size}&page=${page}`;
+  return request({
+    url: url,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+export const apiGetJobsCount = () => {
+  let url = `/api/jobs/count`;
   return request({
     url: url,
     method: 'get',
