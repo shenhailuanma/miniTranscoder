@@ -34,6 +34,8 @@ func Run(listenPort string) error {
 		 */
 		apiGroup.GET("/jobs", controllers.GetJobsController)
 
+		apiGroup.GET("/jobs/count", controllers.GetJobsCountController)
+
 		/**
 		 * @api {POST} /api/jobs 02-CreateTranscodeJob
 		 * @apiName CreateJob

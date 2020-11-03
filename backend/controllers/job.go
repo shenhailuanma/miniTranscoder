@@ -30,3 +30,22 @@ func GetJobsController(c *gin.Context)  {
 
 	c.JSON(response.Status, &response)
 }
+
+func GetJobsCountController(c *gin.Context)  {
+	var response = models.ControllerResponse{}
+	response.Status = http.StatusOK
+	response.Msg = ""
+
+	jobs, err := service.GetJobsCount()
+	if err != nil {
+		response.Status = http.StatusBadRequest
+		response.Msg = err.Error()
+		logrus.Error("GetJobsController, GetJobList, error:", response.Msg)
+		c.JSON(response.Status, &response)
+		return
+	}
+
+	response.Data = jobs
+
+	c.JSON(response.Status, &response)
+}

@@ -25,7 +25,7 @@ func GetJobs(page int, size int) ([]models.Job, error) {
 	}
 
 	if size <= 0 && size != -1 {
-		size = 25
+		size = 15
 	}
 
 	var offset = 0
@@ -36,6 +36,20 @@ func GetJobs(page int, size int) ([]models.Job, error) {
 	err = db.Table("jobs").Order("id desc").Offset(offset).Limit(size).Find(&jobs).Error
 
 	return jobs, err
+}
+
+
+func GetJobsCount() (int64, error) {
+	var count int64 = 0
+
+	db, err := DatabaseOpen()
+	if err != nil {
+		return count, err
+	}
+
+	err = db.Table("jobs").Count(&count).Error
+
+	return count, err
 }
 
 func CreateJob(job models.Job) (int, error) {

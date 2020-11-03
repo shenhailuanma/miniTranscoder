@@ -32,6 +32,10 @@ func GetJobList(page int, size int) ([]models.Job, error) {
 	return dao.GetJobs(page, size)
 }
 
+func GetJobsCount() (int64, error) {
+	return dao.GetJobsCount()
+}
+
 func CreateJob(job models.Job) (int, error) {
 	return dao.CreateJob(job)
 }
