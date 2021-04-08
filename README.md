@@ -1,6 +1,6 @@
 # miniTranscoder
 
-Mini and simple transcode service
+Mini simple transcode service
 
 ## Quick start
 
