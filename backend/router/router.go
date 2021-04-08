@@ -10,12 +10,12 @@ func Run(listenPort string) error {
 	r := gin.Default()
 
 	// web ui static files
-	r.StaticFile("/index.html", "/Users/xuzhang/gitbase/miniTranscoder/frontend/dist/index.html")
-	r.StaticFile("/", "/Users/xuzhang/gitbase/miniTranscoder/frontend/dist/index.html")
-	r.StaticFS("/static", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/frontend/dist/static"))
+	r.StaticFile("/index.html", "/miniTranscoder/www/dist/index.html")
+	r.StaticFile("/", "/miniTranscoder/www/dist/index.html")
+	r.StaticFS("/static", http.Dir("/miniTranscoder/www/dist/static"))
 
 	// web ui download file
-	r.StaticFS("/miniTranscoder", http.Dir("/Users/xuzhang/gitbase/miniTranscoder/backend/miniTranscoder"))
+	r.StaticFS("/miniTranscoder", http.Dir("/miniTranscoder"))
 
 	// healthz
 	//r.GET("/healthz", controllers.HealthzController)
