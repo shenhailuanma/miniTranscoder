@@ -26,7 +26,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: 1.14
 
       # Runs a single command using the runners shell
       - name: Start
@@ -40,5 +40,8 @@ jobs:
         run: |
           echo "build"
           ls -lh
-          GOOS=linux GOARCH=amd64 go build -mod=vendor -tags netgo -ldflags "-s -w" -o mtserver ./backend/main.go
+          cd backend
+          ls -lh
+          go mod vendor
+          GOOS=linux GOARCH=amd64 go build -mod=vendor -tags netgo -ldflags "-s -w" -o mtserver main.go
           ls -lh
