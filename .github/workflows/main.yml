@@ -45,3 +45,20 @@ jobs:
           go mod vendor
           GOOS=linux GOARCH=amd64 go build -mod=vendor -tags netgo -ldflags "-s -w" -o mtserver main.go
           ls -lh
+          
+      - name: Package
+        run: |
+          echo "Package start"
+          ls -lh
+          echo "Prepare package folder"
+          ls -lh
+          mkdir -p ./miniTranscoder/bin
+          mkdir -p ./miniTranscoder/www
+          echo "Copy files"
+          cp -rf mtserver ./miniTranscoder/bin
+          chmod +x ./miniTranscoder/bin/mtserver
+          ls -lh ./miniTranscoder/bin
+          echo "Package"
+          tar czvf miniTranscoder.tar.gz miniTranscoder
+          ls -lh
+          echo "Package done"
