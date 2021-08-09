@@ -49,6 +49,7 @@ jobs:
       - name: Package
         run: |
           echo "Package start"
+          cd backend
           ls -lh
           echo "Prepare package folder"
           ls -lh
