@@ -63,3 +63,10 @@ jobs:
           tar czvf miniTranscoder.tar.gz miniTranscoder
           ls -lh
           echo "Package done"
+      - name: Upload asset to release
+        uses: gacts/upload-to-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: './backend/miniTranscoder.tar.gz'
+          type: 'application/octet-stream'
