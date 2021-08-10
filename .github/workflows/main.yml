@@ -64,12 +64,9 @@ jobs:
           ls -lh
           echo "Package done"
       - name: Upload asset to release
-        uses: Hs1r1us/Release-AIO@v1
+        uses: JasonEtco/upload-to-release@master
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
-          tag_name: 'inherit'
-          body: 'hello world'
-          repo: 'shenhailuanma/miniTranscoder'
-          asset_files: './backend/miniTranscoder.tar.gz'
+          args: './backend/miniTranscoder.tar.gz'
 
