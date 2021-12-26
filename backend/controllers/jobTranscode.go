@@ -4,8 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/shenhailuanma/ffmpeg-command-generator/ffmpeg"
-	"github.com/shenhailuanma/goutils/md5"
-	"github.com/shenhailuanma/goutils/random"
 	"github.com/shenhailuanma/miniTranscoder/config"
 	"github.com/shenhailuanma/miniTranscoder/models"
 	"github.com/shenhailuanma/miniTranscoder/service"
@@ -28,6 +26,8 @@ func CreateTranscodeJobController(c *gin.Context)  {
 		return
 	}
 
+	logrus.Info("CreateTranscodeJobController, request:", request)
+
 	// check
 	if len(request.Inputs) == 0 {
 		response.Status = http.StatusBadRequest
@@ -41,15 +41,14 @@ func CreateTranscodeJobController(c *gin.Context)  {
 	for index,_ := range request.Inputs {
 		request.Inputs[index] = config.ConfigDataUploadPath + "/" + request.Inputs[index]
 	}
+
 	if len(request.Outputs) == 0 {
+		request.Outputs = []ffmpeg.FFmpegTranscodeOutputParams{}
 		var output = ffmpeg.FFmpegTranscodeOutputParams{}
 
 		if output.Format == "" {
 			output.Format = "mp4"
 		}
-
-		output.Output = config.ConfigDataOutputPath + "/" + md5.Md5String(request.Inputs[0]) + random.RandomStringBase62(6) + "." + output.Format
-		request.Outputs = []ffmpeg.FFmpegTranscodeOutputParams{}
 		request.Outputs = append(request.Outputs, output)
 	}
 	request.Globals.Overwrite = true

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/go-cmd/cmd"
 	"github.com/shenhailuanma/miniTranscoder/config"
-	"github.com/shenhailuanma/miniTranscoder/dao"
 	"github.com/shenhailuanma/miniTranscoder/models"
 	"github.com/shenhailuanma/miniTranscoder/runtime"
 	"github.com/shenhailuanma/miniTranscoder/utils"
@@ -28,16 +27,17 @@ func init() {
 	logrus.Info("service.job init done")
 }
 
-func GetJobList(page int, size int) ([]models.Job, error) {
-	return dao.GetJobs(page, size)
+func GetJobList() ([]models.Job, error) {
+	return GetAllJobsInfo()
 }
 
-func GetJobsCount() (int64, error) {
-	return dao.GetJobsCount()
+func CreateJob(job models.Job) (string, error) {
+	return InitJob(job)
 }
 
-func CreateJob(job models.Job) (int, error) {
-	return dao.CreateJob(job)
+func RemoveJob(jobID string) error {
+	logrus.Info("RemoveJob, jobID:", jobID)
+	return nil
 }
 
 func loopDoJob() {
@@ -48,28 +48,33 @@ func loopDoJob() {
 		logrus.Info("loopDoJob, get job:", jobID)
 
 		// get job
-		job, err := dao.GetJobInfo(jobID)
+		job, err := GetJobConfig(jobID)
 		if err != nil {
-			logrus.Error("loopDoJob, GetJobInfo error:", err.Error())
+			logrus.Error("loopDoJob, GetJobConfig error:", err.Error())
 			continue
 		}
 
 		logrus.Info("loopDoJob, Command:", job.Command)
 
 		// update status
-		dao.UpdateJobStatus(jobID, "doing")
+		UpdateJobStatus(jobID, "doing")
 
 		existCode, err := runJob(jobID, job.Command)
 		if err != nil {
 			logrus.Error("loopDoJob, GetJobInfo error:", err.Error())
-			dao.UpdateJobStatus(jobID, "failed")
+			UpdateJobStatus(jobID, "failed")
 			continue
 		}
 		logrus.Info("loopDoJob, job:", jobID, " over, exist code:", existCode)
+
 		// update progress
-		dao.UpdateJobProgress(jobID, 100)
+		UpdateJobProgress(jobID, 100)
+
 		// update status
-		dao.UpdateJobStatus(jobID, "success")
+		UpdateJobStatus(jobID, "success")
+
+		// todo: update output file size
+
 	}
 }
 
@@ -128,10 +133,10 @@ func runCommand(bin, cmdString string, jobID int) (int, error) {
 	return status.Exit, nil
 }
 
-func runJob(jobID int, cmdString string) (uint32, error) {
+func runJob(jobID string, cmdString string) (uint32, error) {
 	// generate script file
-	var scriptFilePath = fmt.Sprintf("%s/%d.sh", config.ConfigDataOutputPath, jobID)
-	var logFilePath = fmt.Sprintf("%s/%d.log", config.ConfigDataOutputPath, jobID)
+	var scriptFilePath = fmt.Sprintf("%s/%s/job.sh", config.ConfigDataOutputPath, jobID)
+	var logFilePath = fmt.Sprintf("%s/%s/job.log", config.ConfigDataOutputPath, jobID)
 
 	var scriptString = fmt.Sprintf("#!/bin/sh\nffmpeg %s", cmdString)
 	err := utils.WriteFile(scriptFilePath, scriptString)
@@ -143,7 +148,7 @@ func runJob(jobID int, cmdString string) (uint32, error) {
 	return ScriptRun(jobID, scriptFilePath, logFilePath)
 }
 
-func ScriptRun(jobID int, scriptPath string, logFilePath string) (uint32, error) {
+func ScriptRun(jobID string, scriptPath string, logFilePath string) (uint32, error) {
 	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
 	if err != nil {
 		return 0, err
@@ -177,7 +182,10 @@ func ScriptRun(jobID int, scriptPath string, logFilePath string) (uint32, error)
 				return
 			}
 			// update progress
-			dao.UpdateJobProgress(jobID, parseFFmpegLogProgress(logFilePath))
+			UpdateJobProgress(jobID, parseFFmpegLogProgress(logFilePath))
+
+			// update output file size
+			SyncJobOutputFileSize(jobID)
 		}
 	}()
 

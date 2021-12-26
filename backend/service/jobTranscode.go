@@ -9,14 +9,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (int, error) {
+func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (string, error) {
 	// todo: params check
 	if len(request.Inputs) == 0 {
-		return 0, errors.New("no input")
+		return "", errors.New("no input")
 	}
 	if len(request.Outputs) == 0 {
-		return 0, errors.New("no output")
+		return "", errors.New("no output")
 	}
+
+	// todo: support muti input and output
 
 	// create job
 	var job = models.Job{}
@@ -24,22 +26,31 @@ func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (int, error) {
 	job.SourceName = utils.PathLastName(job.Input)
 	job.SourceSize = utils.FileSize(job.Input)
 	job.Progress = 0
-	job.Output = request.Outputs[0].Output
+
+	jobID, err := CreateJob(job)
+	if err != nil {
+		return "", err
+	}
+
+	// update jot output path
+	// create job
+	job.OutputFormat = request.Outputs[0].Format
+	job.Output = JobOutputPath(jobID, job.OutputFormat)
+
+	request.Outputs[0].Output = job.Output
 
 	// generate ffmpeg command
 	cmdString, err := ffmpeg.FFmpegTranscode(request)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
+	job.Command = cmdString
 	logrus.Info("CreateTranscodeJob, cmdString:", cmdString)
 
-	// create job
-	job.Command = cmdString
-	jobID, err := CreateJob(job)
-	if err != nil {
-		return 0, err
-	}
+	// update cmdString
+	UpdateJobCmdAndOutput(jobID, cmdString, job.Output)
+
 
 	// push to job queue
 	runtime.JobPush(jobID)

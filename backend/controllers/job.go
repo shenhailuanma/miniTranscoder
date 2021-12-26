@@ -6,7 +6,6 @@ import (
 	"github.com/shenhailuanma/miniTranscoder/service"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"strconv"
 )
 
 func GetJobsController(c *gin.Context)  {
@@ -14,10 +13,7 @@ func GetJobsController(c *gin.Context)  {
 	response.Status = http.StatusOK
 	response.Msg = ""
 
-	page, _ := strconv.Atoi(c.Query("page"))
-	size, _ := strconv.Atoi(c.Query("size"))
-
-	jobs, err := service.GetJobList(page, size)
+	jobs, err := service.GetJobList()
 	if err != nil {
 		response.Status = http.StatusBadRequest
 		response.Msg = err.Error()
@@ -31,21 +27,19 @@ func GetJobsController(c *gin.Context)  {
 	c.JSON(response.Status, &response)
 }
 
-func GetJobsCountController(c *gin.Context)  {
+func RemoveJobController(c *gin.Context)  {
 	var response = models.ControllerResponse{}
 	response.Status = http.StatusOK
 	response.Msg = ""
 
-	jobs, err := service.GetJobsCount()
+	err := service.RemoveJob(c.Param("id"))
 	if err != nil {
 		response.Status = http.StatusBadRequest
 		response.Msg = err.Error()
-		logrus.Error("GetJobsController, GetJobList, error:", response.Msg)
+		logrus.Error("RemoveJobController, RemoveJob, error:", response.Msg)
 		c.JSON(response.Status, &response)
 		return
 	}
-
-	response.Data = jobs
 
 	c.JSON(response.Status, &response)
 }

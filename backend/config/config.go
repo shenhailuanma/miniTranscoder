@@ -1,16 +1,42 @@
 package config
 
-var ConfigFFmpegPath = "ffmpeg"
+var ConfigServicePathBase = "/data"
+var ConfigDataUploadPath = "/data/upload"  // user upload file store here
+var ConfigDataOutputPath = "/data/vod"     // transcode video store here
 
-const ConfigServicePathBase = "miniTranscoder"
-const ConfigServicePathWeb = ConfigServicePathBase + "/www"
-const ConfigServicePathBin = ConfigServicePathBase + "/bin"
+func InitDirectoryConfig(base string)  {
+	ConfigServicePathBase = base
+	ConfigDataUploadPath = ConfigServicePathBase + "/upload"
+	ConfigDataOutputPath = ConfigServicePathBase + "/vod"
+}
 
-// db
-const ConfigServiceSqliteDir = ConfigServicePathBase + "/db"
-const ConfigServiceSqlitePath = ConfigServicePathBase + "/db/mt.sqlite"
-const ConfigDatabaseUrl = ""
 
-// data
-const ConfigDataUploadPath = ConfigServicePathBase + "/data/upload"
-const ConfigDataOutputPath = ConfigServicePathBase + "/data/output"
+/**
+File tree definition:
+
+/ -- ${BaseFolder}
+	 	/-- upload
+			-- ${SourceVideo1}
+			-- ${SourceVideo1}
+				...
+			-- ${SourceVideoN}
+        /-- data
+			/--${DataTime}
+				/-- ${JobNumber}
+						-- job.json
+						-- ${CustomName}.mp4
+						-- ${CustomName}.m3u8
+						/-- m3u8
+			/--202112
+				...
+			/--202201
+				/-- 1
+				/-- 2
+   				  ...
+				/-- 102
+					-- job.json
+					-- ${CustomName}.mp4
+					-- ${CustomName}.m3u8
+					/-- m3u8
+
+*/

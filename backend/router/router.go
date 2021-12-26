@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/shenhailuanma/miniTranscoder/config"
 	"github.com/shenhailuanma/miniTranscoder/controllers"
 	"net/http"
 )
@@ -15,7 +16,7 @@ func Run(listenPort string) error {
 	r.StaticFS("/static", http.Dir("/miniTranscoder/www/dist/static"))
 
 	// web ui download file
-	r.StaticFS("/miniTranscoder", http.Dir("/miniTranscoder"))
+	r.StaticFS(config.ConfigServicePathBase, http.Dir(config.ConfigServicePathBase))
 
 	// healthz
 	//r.GET("/healthz", controllers.HealthzController)
@@ -34,7 +35,7 @@ func Run(listenPort string) error {
 		 */
 		apiGroup.GET("/jobs", controllers.GetJobsController)
 
-		apiGroup.GET("/jobs/count", controllers.GetJobsCountController)
+		apiGroup.DELETE("/job/:id", controllers.RemoveJobController)
 
 		/**
 		 * @api {POST} /api/jobs 02-CreateTranscodeJob
@@ -48,7 +49,28 @@ func Run(listenPort string) error {
 		    ],
 		    "outputs":[
 		        {
-		            "output": "/video/Wonders_of_Nature.output.mp4"
+		            "output": "/video/Wonders_of_Nature.output.mp4",
+					"format": "mp4", // default
+					"streams": [
+						{
+							"kind": "video",
+							"video": {
+								"codec": "h264",
+								"preset": "slow",
+								"fps": 25,
+								"width": 1920,
+								"height": 1080
+							}
+						},
+						{
+							"kind": "audio",
+							"audio": {
+								"codec": "aac",
+								"channles": 2,
+								"": 44100
+		                    }
+						}
+					]
 		        }
 		    ]
 		}

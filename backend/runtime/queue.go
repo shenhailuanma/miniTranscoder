@@ -2,11 +2,11 @@ package runtime
 
 import "github.com/sirupsen/logrus"
 
-var gJobsChan chan int
+var gJobsChan chan string
 
 func init()  {
 	logrus.Info("runtime.queue init")
-	gJobsChan = make(chan int, 4096)
+	gJobsChan = make(chan string, 4096)
 
 	// todo: load not completed jobs when service start
 
@@ -15,10 +15,10 @@ func init()  {
 	logrus.Info("runtime.queue init done")
 }
 
-func JobPush(jobID int)  {
+func JobPush(jobID string)  {
 	gJobsChan<- jobID
 }
 
-func JobPop() int {
+func JobPop() string {
 	return <-gJobsChan
 }

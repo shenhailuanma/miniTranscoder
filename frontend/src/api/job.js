@@ -2,18 +2,7 @@
 import request from '@/utils/request'
 
 export const apiGetJobList = (size, page) => {
-  let url = `/api/jobs?size=${size}&page=${page}`;
-  return request({
-    url: url,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-}
-
-export const apiGetJobsCount = () => {
-  let url = `/api/jobs/count`;
+  let url = `/api/jobs`;
   return request({
     url: url,
     method: 'get',
