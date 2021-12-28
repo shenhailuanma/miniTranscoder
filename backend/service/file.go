@@ -28,6 +28,7 @@ File tree definition:
 					-- ${CustomName}.mp4
 					-- ${CustomName}.m3u8
 					/-- m3u8
+					/-- images
 			/-- 2
 			  ...
 			/-- 102
@@ -161,18 +162,50 @@ func UpdateJobProgress(jobID string, progress int) error {
 	return SetJobConfig(jobID, jobInfo)
 }
 
-func UpdateJobCmdAndOutput(jobID string, cmdString, output string) error {
+func UpdateJobInfo(jobID string, request models.JobUpdateRequest) error {
 	jobInfo, err := GetJobConfig(jobID)
 	if err != nil {
 		return err
 	}
 
-	jobInfo.Command = cmdString
-	jobInfo.Output = output
+	if request.Output != nil {
+		jobInfo.Output = *request.Output
+	}
+	if request.OutputFormat != nil {
+		jobInfo.OutputFormat = *request.OutputFormat
+	}
+	if request.Status != nil {
+		jobInfo.Status = *request.Status
+	}
+	if request.SourceSize != nil {
+		jobInfo.SourceSize = *request.SourceSize
+	}
+	if request.Progress != nil {
+		jobInfo.Progress = *request.Progress
+	}
+
+	if request.Command != nil {
+		jobInfo.Command = *request.Command
+	}
+	if request.OutputSize != nil {
+		jobInfo.OutputSize = *request.OutputSize
+	}
+	if request.RelativePath != nil {
+		jobInfo.RelativePath = *request.RelativePath
+	}
+
+	if request.Description != nil {
+		jobInfo.Description = *request.Description
+	}
+	if request.Publish != nil {
+		jobInfo.Publish = *request.Publish
+	}
+	if request.Snapshot != nil {
+		jobInfo.Snapshot = *request.Snapshot
+	}
 
 	return SetJobConfig(jobID, jobInfo)
 }
-
 
 
 func GetJobFolders() ([]string, error) {
@@ -203,6 +236,10 @@ func GetJobFolders() ([]string, error) {
 
 func JobOutputPath(jobID string, format string) string {
 	return fmt.Sprintf("%s/%s/video.%s", config.ConfigDataOutputPath, jobID, format)
+}
+
+func JobRelativePath(jobID string, format string) string {
+	return fmt.Sprintf("%s/%s/video.%s", config.ConfigVodFolder, jobID, format)
 }
 
 func GetJobOutputFileSize(jobID string) (int64, error) {

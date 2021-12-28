@@ -35,9 +35,14 @@ func CreateJob(job models.Job) (string, error) {
 	return InitJob(job)
 }
 
+func UpdateJob(jobID string, request models.JobUpdateRequest) error {
+	return UpdateJobInfo(jobID, request)
+}
+
 func RemoveJob(jobID string) error {
 	logrus.Info("RemoveJob, jobID:", jobID)
-	return nil
+	jobFolder := fmt.Sprintf("%s/%s", config.ConfigDataOutputPath, jobID)
+	return utils.RemoveDir(jobFolder)
 }
 
 func loopDoJob() {
@@ -67,14 +72,16 @@ func loopDoJob() {
 		}
 		logrus.Info("loopDoJob, job:", jobID, " over, exist code:", existCode)
 
+		time.Sleep(time.Second * 1)
+
 		// update progress
 		UpdateJobProgress(jobID, 100)
 
 		// update status
 		UpdateJobStatus(jobID, "success")
 
-		// todo: update output file size
-
+		// snapshot
+		runSnapshotJob(jobID)
 	}
 }
 
@@ -207,6 +214,62 @@ func ScriptRun(jobID string, scriptPath string, logFilePath string) (uint32, err
 
 	return 0, nil
 }
+
+func ScriptRunCommon(jobID string, scriptPath string, logFilePath string) (uint32, error) {
+	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	if err != nil {
+		return 0, err
+	}
+
+	exist, _ := utils.PathExists(scriptPath)
+	if exist == false {
+		logrus.Info("ScriptRun, script:", scriptPath, ", not exist.")
+		return 1, errors.New("script not exist.")
+	}
+
+	logrus.Info("ScriptRun, run script:", scriptPath, " begin")
+
+	cmd := exec.Command("sh", scriptPath)
+	cmd.Env = os.Environ()
+
+	cmd.Stdout = logFile
+	cmd.Stderr = logFile
+
+	// get job progress
+	var scriptRunOver = false
+	defer func() {
+		scriptRunOver = true
+	}()
+
+	go func() {
+		for {
+			time.Sleep(time.Second * 1)
+			if scriptRunOver {
+				logrus.Info("ScriptRun, script run over, return")
+				return
+			}
+		}
+	}()
+
+	// run
+	err = cmd.Run()
+	if err != nil {
+		logrus.Error("ScriptRun, run script:", scriptPath, ", error:", err)
+
+		// exit code
+		code, ok := cmd.ProcessState.Sys().(syscall.WaitStatus)
+		if ok {
+			return uint32(code.ExitStatus()), err
+		}
+
+		return 1, err
+	}
+
+	logrus.Info("ScriptRun, run script:", scriptPath, " over")
+
+	return 0, nil
+}
+
 
 func parseFFmpegLogProgress(logPath string) int {
 	var progress = 0

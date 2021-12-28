@@ -13,5 +13,22 @@ type Job struct {
 	Progress     int
 	Command      string
 	OutputSize   int64
+	RelativePath string // relative path
+	Description  string
+	Publish      bool
+	Snapshot     string // video snapshot id
 }
 
+type JobUpdateRequest struct {
+	Output       *string
+	OutputFormat *string
+	Status       *string
+	SourceSize   *int64
+	Progress     *int
+	Command      *string
+	OutputSize   *int64
+	RelativePath *string // relative path
+	Description  *string
+	Publish      *bool
+	Snapshot     *string // video snapshot id
+}

@@ -11,12 +11,12 @@ func Run(listenPort string) error {
 	r := gin.Default()
 
 	// web ui static files
-	r.StaticFile("/index.html", "/miniTranscoder/www/dist/index.html")
-	r.StaticFile("/", "/miniTranscoder/www/dist/index.html")
-	r.StaticFS("/static", http.Dir("/miniTranscoder/www/dist/static"))
+	r.StaticFile("/index.html", config.ConfigServicePathBase + "/ui/index.html")
+	r.StaticFile("/", config.ConfigServicePathBase + "/ui/index.html")
+	r.StaticFS("/static", http.Dir(config.ConfigServicePathBase + "/ui/static"))
 
 	// web ui download file
-	r.StaticFS(config.ConfigServicePathBase, http.Dir(config.ConfigServicePathBase))
+	r.StaticFS("/" + config.ConfigVodFolder, http.Dir(config.ConfigDataOutputPath))
 
 	// healthz
 	//r.GET("/healthz", controllers.HealthzController)
@@ -26,6 +26,8 @@ func Run(listenPort string) error {
 	apiGroup.Use(CORS())
 	{
 		apiGroup.POST("/file/upload", controllers.FileUploadController)
+
+		apiGroup.GET("/playlist", controllers.GetPlaylistController)
 
 		/**
 		 * @api {GET} /api/jobs 01-GetJobList
@@ -37,6 +39,7 @@ func Run(listenPort string) error {
 
 		apiGroup.DELETE("/job/:id", controllers.RemoveJobController)
 
+		apiGroup.PUT("/job/:id", controllers.UpdateJobController)
 		/**
 		 * @api {POST} /api/jobs 02-CreateTranscodeJob
 		 * @apiName CreateJob

@@ -1,13 +1,16 @@
 package config
 
-var ConfigServicePathBase = "/data"
-var ConfigDataUploadPath = "/data/upload"  // user upload file store here
-var ConfigDataOutputPath = "/data/vod"     // transcode video store here
+const ConfigUploadFolder = "upload"
+const ConfigVodFolder = "vod"
+
+var ConfigServicePathBase = "/tmp"
+var ConfigDataUploadPath = "/tmp/upload"  // user upload file store here
+var ConfigDataOutputPath = "/tmp/vod"     // transcode video store here
 
 func InitDirectoryConfig(base string)  {
 	ConfigServicePathBase = base
-	ConfigDataUploadPath = ConfigServicePathBase + "/upload"
-	ConfigDataOutputPath = ConfigServicePathBase + "/vod"
+	ConfigDataUploadPath = ConfigServicePathBase + "/" + ConfigUploadFolder
+	ConfigDataOutputPath = ConfigServicePathBase + "/" + ConfigVodFolder
 }
 
 

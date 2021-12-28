@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
 import request from '@/utils/request'
 
-export const apiGetJobList = (size, page) => {
+export const apiGetJobList = () => {
   let url = `/api/jobs`;
   return request({
     url: url,
@@ -21,5 +21,28 @@ export const apiCreateJobTranscode = (data) => {
       'Content-Type': 'application/json'
     },
     data: data
+  })
+}
+
+export const apiRemoveJob = (jobID) => {
+  let url = `/api/job/${jobID}`;
+  return request({
+    url: url,
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+export const apiUpdateJob = (jobID, data) => {
+  let url = `/api/job/${jobID}`;
+  return request({
+    url: url,
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: data,
   })
 }

@@ -26,6 +26,7 @@ func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (string, error) {
 	job.SourceName = utils.PathLastName(job.Input)
 	job.SourceSize = utils.FileSize(job.Input)
 	job.Progress = 0
+	job.Description = job.SourceName
 
 	jobID, err := CreateJob(job)
 	if err != nil {
@@ -36,6 +37,7 @@ func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (string, error) {
 	// create job
 	job.OutputFormat = request.Outputs[0].Format
 	job.Output = JobOutputPath(jobID, job.OutputFormat)
+	job.RelativePath = JobRelativePath(jobID, job.OutputFormat)
 
 	request.Outputs[0].Output = job.Output
 
@@ -48,9 +50,18 @@ func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (string, error) {
 	job.Command = cmdString
 	logrus.Info("CreateTranscodeJob, cmdString:", cmdString)
 
-	// update cmdString
-	UpdateJobCmdAndOutput(jobID, cmdString, job.Output)
+	// update job info
+	var jobInfo = models.JobUpdateRequest{
+		Command: &cmdString,
+		Output: &job.Output,
+		RelativePath: &job.RelativePath,
+		OutputFormat: &job.OutputFormat,
+	}
 
+	err = UpdateJobInfo(jobID, jobInfo)
+	if err != nil {
+		return "", err
+	}
 
 	// push to job queue
 	runtime.JobPush(jobID)
