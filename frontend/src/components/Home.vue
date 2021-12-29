@@ -295,7 +295,7 @@ export default {
     },
     handlePlayVideoSelect(row) {
       this.dialogPlayVideoVisible = true;
-      this.playVideoUrl = row.Output;
+      this.playVideoUrl = row.RelativePath;
     },
     handlePlayVideoDialogClose() {
       this.dialogPlayVideoVisible = false;
@@ -335,7 +335,7 @@ export default {
 
       name = `${row.ID}_${name}`;
       console.log("downloadFile, Output file save as name:", name);
-      FileSaver.saveAs(row.Output, name);
+      FileSaver.saveAs(row.RelativePath, name);
     }
   },
   mounted() {

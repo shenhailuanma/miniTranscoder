@@ -15,7 +15,7 @@ module.exports = {
         target: "http://127.0.0.1:9000",
         changeOrigin: true
       },
-      "/tmp": {
+      "/vod": {
         target: "http://127.0.0.1:9000",
         changeOrigin: true
       }
