@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-cmd/cmd"
+	"github.com/shenhailuanma/miniTranscoder/cache"
 	"github.com/shenhailuanma/miniTranscoder/config"
 	"github.com/shenhailuanma/miniTranscoder/models"
 	"github.com/shenhailuanma/miniTranscoder/runtime"
@@ -40,6 +41,9 @@ func UpdateJob(jobID string, request models.JobUpdateRequest) error {
 }
 
 func RemoveJob(jobID string) error {
+	logrus.Info("RemoveJob, clean cache")
+	cache.CleanCacheJobs()
+
 	logrus.Info("RemoveJob, jobID:", jobID)
 	jobFolder := fmt.Sprintf("%s/%s", config.ConfigDataOutputPath, jobID)
 	return utils.RemoveDir(jobFolder)
