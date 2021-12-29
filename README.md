@@ -7,8 +7,7 @@ Mini simple transcode service
 https://hub.docker.com/r/shenhailuanma/minitranscoder
 
 ```bash
-docker pull shenhailuanma/minitranscoder
-
-docker run -p 9000:9000 -d shenhailuanma/minitranscoder
+docker pull shenhailuanma/minitranscoder:1.0.9
+docker run -p 9000:9000 -d shenhailuanma/minitranscoder:1.0.9
 
 ```
