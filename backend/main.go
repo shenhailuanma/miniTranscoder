@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/shenhailuanma/miniTranscoder/config"
 	"github.com/shenhailuanma/miniTranscoder/router"
 	"github.com/shenhailuanma/miniTranscoder/service"
 	"github.com/sirupsen/logrus"
@@ -11,6 +12,7 @@ import (
 
 var (
 	port = flag.Int("p", 9000, "custom service port")
+	directory = flag.String("d", "/tmp", "video data store base directory")
 )
 
 func main() {
@@ -18,6 +20,9 @@ func main() {
 	flag.Parse()
 
 	logrus.Info("Service start")
+
+	config.InitDirectoryConfig(*directory)
+
 	err := envPrepare()
 	if err != nil {
 		logrus.Error("Env prepare error:", err.Error())
@@ -38,11 +43,6 @@ func main() {
 func envPrepare() error {
 	// prepare
 	err := service.PrepareServiceRequiredFolders()
-	if err != nil {
-		return err
-	}
-
-	err = service.PrepareDatabase()
 	if err != nil {
 		return err
 	}

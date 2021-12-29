@@ -70,21 +70,11 @@ func CheckFileExist(filePath string) bool {
 func WriteFile(filePath string, content string) error {
 	data := []byte(content)
 
-	err := ioutil.WriteFile(filePath, data, 0644)
-	if err != nil {
-		return err
-	}
-
-	return err
+	return ioutil.WriteFile(filePath, data, 0644)
 }
 
 func WriteBytesToFile(filePath string, data []byte) error {
-	err := ioutil.WriteFile(filePath, data, 0644)
-	if err != nil {
-		return err
-	}
-
-	return err
+	return ioutil.WriteFile(filePath, data, 0644)
 }
 
 func ReadFile(filename string) ([]byte, error) {

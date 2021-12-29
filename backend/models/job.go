@@ -2,16 +2,33 @@ package models
 
 // jobs table
 type Job struct {
-	ID         int
-	Input      string
-	Output     string
-	Status     string
-	MD5        string
-	SourceName string
-	SourceSize int64
-	Progress   int
-	Command    string
+	ID           string
+	Input        string
+	Output       string
+	OutputFormat string
+	Status       string
+	MD5          string
+	SourceName   string
+	SourceSize   int64
+	Progress     int
+	Command      string
+	OutputSize   int64
+	RelativePath string // relative path
+	Description  string
+	Publish      bool
+	Snapshot     string // video snapshot id
 }
 
-type JobStruct struct {
+type JobUpdateRequest struct {
+	Output       *string
+	OutputFormat *string
+	Status       *string
+	SourceSize   *int64
+	Progress     *int
+	Command      *string
+	OutputSize   *int64
+	RelativePath *string // relative path
+	Description  *string
+	Publish      *bool
+	Snapshot     *string // video snapshot id
 }
