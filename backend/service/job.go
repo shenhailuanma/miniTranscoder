@@ -84,6 +84,9 @@ func loopDoJob() {
 		// update status
 		UpdateJobStatus(jobID, "success")
 
+		// update output file size
+		SyncJobOutputFileSize(jobID)
+
 		// snapshot
 		runSnapshotJob(jobID)
 	}

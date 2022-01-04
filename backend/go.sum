@@ -70,6 +70,8 @@ github.com/shenhailuanma/ffmpeg-command-generator v1.0.1 h1:TxTjvDxoIun9J5LJu9or
 github.com/shenhailuanma/ffmpeg-command-generator v1.0.1/go.mod h1:M25iF2wTM4aD5ML+NhViK+gUJpPvsklgyq0fARVeaYE=
 github.com/shenhailuanma/ffmpeg-command-generator v1.0.2 h1:5nBmcTt2Mu8fbp8s5UokH9Vus9jgDmw8/fOZjYEoYPY=
 github.com/shenhailuanma/ffmpeg-command-generator v1.0.2/go.mod h1:M25iF2wTM4aD5ML+NhViK+gUJpPvsklgyq0fARVeaYE=
+github.com/shenhailuanma/ffmpeg-command-generator v1.0.3 h1:iYaDYMXTrOUjoFlB2rMagQ22uWfr906oe8AkNj3pKiI=
+github.com/shenhailuanma/ffmpeg-command-generator v1.0.3/go.mod h1:M25iF2wTM4aD5ML+NhViK+gUJpPvsklgyq0fARVeaYE=
 github.com/shenhailuanma/goutils v1.2.4 h1:aJRO6nJ2M6t1mr2guPu8MHo/yK+yfvawZ761Lld8T4w=
 github.com/shenhailuanma/goutils v1.2.4/go.mod h1:l0dAVJKxyX9sf/A0AwbmLAq3a9Sj9CptB8xI59vnUcw=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=

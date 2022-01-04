@@ -14,9 +14,10 @@ type FFmpegTranscodeVideoStreamParams struct {
 	Fps     int    `json:"fps"`
 }
 type FFmpegTranscodeAudioStreamParams struct {
-	Map      string `json:"map"` // strams map, http://ffmpeg.org/ffmpeg-all.html#Advanced-options
-	Codec    string `json:"codec"`
-	Channels int    `json:"channles"`
+	Map        string `json:"map"` // strams map, http://ffmpeg.org/ffmpeg-all.html#Advanced-options
+	Codec      string `json:"codec"`
+	Channels   int    `json:"channles"`
+	SampleRate int    `json:"sample_rate"`
 }
 
 type FFmpegTranscodeStreamParams struct {
