@@ -2,12 +2,12 @@
 
 # build frontend
 pushd frontend
-#npm run build
+npm run build
 popd
 
 # build backend
 pushd backend
-#GOOS=linux GOARCH=amd64 go build -mod=vendor -tags netgo -ldflags "-s -w" -o mtserver main.go
+GOOS=linux GOARCH=amd64 go build -mod=vendor -tags netgo -ldflags "-s -w" -o mtserver main.go
 popd
 
 
@@ -21,10 +21,10 @@ cp -rf ./frontend/dist ./miniTranscoder
 mv ./miniTranscoder/dist ./miniTranscoder/ui
 
 # docker build
-docker build -t shenhailuanma/minitranscoder:1.0.9 .
+docker build -t shenhailuanma/minitranscoder:1.0.10 .
 
 # run service
-# docker run -p 9003:9000 -d shenhailuanma/minitranscoder:1.0.9
+# docker run -p 9003:9000 -d shenhailuanma/minitranscoder:1.0.10
 
 # push 
-# docker push shenhailuanma/minitranscoder:1.0.9
+# docker push shenhailuanma/minitranscoder:1.0.10
