@@ -7,9 +7,8 @@ import (
 
 var cacheCache *cache.Cache
 
-
-func init()  {
-	cacheCache = cache.New(10*time.Minute, 5*time.Minute)
+func init() {
+	cacheCache = cache.New(time.Minute, time.Minute)
 }
 
 func ItemCount() int {

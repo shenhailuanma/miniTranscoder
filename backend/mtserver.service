@@ -5,7 +5,7 @@ After=syslog.target network.target network-online.target remote-fs.target nss-lo
 [Service]
 #Type=forking
 PIDFile=/run/mtserver.pid
-ExecStart=/bin/sh -c '/opt/bin/mtserver -p 9000 -d /opt/vod/www >> /var/log/mtserver.log 2>&1'
+ExecStart=/bin/sh -c '/opt/bin/mtserver -p 9000 -d /export/www >> /var/log/mtserver.log 2>&1'
 ExecStop=kill -9 $(ps axuf|grep mtserver|grep -v grep|awk '{print $2}')
 PrivateTmp=false
 Restart=always
