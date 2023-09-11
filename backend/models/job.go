@@ -17,7 +17,16 @@ type Job struct {
 	Description  string
 	Publish      bool
 	Snapshot     string // video snapshot id
+	Custom       string // user custom data
 }
+
+const (
+	JobStatusInit        = "init"
+	JobStatusQueuing     = "queuing"
+	JobStatusProgressing = "progressing"
+	JobStatusDone        = "done"
+	JobStatusError       = "error"
+)
 
 type JobUpdateRequest struct {
 	Output       *string
@@ -31,4 +40,5 @@ type JobUpdateRequest struct {
 	Description  *string
 	Publish      *bool
 	Snapshot     *string // video snapshot id
+	Custom       *string // user custom data
 }

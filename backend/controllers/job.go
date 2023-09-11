@@ -9,12 +9,12 @@ import (
 	"net/http"
 )
 
-func GetJobsController(c *gin.Context)  {
+func GetJobsController(c *gin.Context) {
 	var response = models.ControllerResponse{}
 	response.Status = http.StatusOK
 	response.Msg = ""
 
-	jobs, err := service.GetJobList()
+	jobs, err := service.GetAllJobsInfo()
 	if err != nil {
 		response.Status = http.StatusBadRequest
 		response.Msg = err.Error()
@@ -28,7 +28,52 @@ func GetJobsController(c *gin.Context)  {
 	c.JSON(response.Status, &response)
 }
 
-func UpdateJobController(c *gin.Context)  {
+func GetUndoneJobsController(c *gin.Context) {
+	var response = models.ControllerResponse{}
+	response.Status = http.StatusOK
+	response.Msg = ""
+
+	jobs, err := service.GetAllJobsInfo()
+	if err != nil {
+		response.Status = http.StatusBadRequest
+		response.Msg = err.Error()
+		logrus.Error("GetJobsController, GetJobList, error:", response.Msg)
+		c.JSON(response.Status, &response)
+		return
+	}
+
+	var outputs = []models.Job{}
+	for _, jobOne := range jobs {
+		if jobOne.Status != models.JobStatusDone && jobOne.Status != models.JobStatusError {
+			outputs = append(outputs, jobOne)
+		}
+	}
+
+	response.Data = outputs
+
+	c.JSON(response.Status, &response)
+}
+
+func GetJobInfoController(c *gin.Context) {
+	var response = models.ControllerResponse{}
+	response.Status = http.StatusOK
+	response.Msg = ""
+
+	jobInfo, err := service.GetJob(c.Param("id"))
+	if err != nil {
+		response.Status = http.StatusBadRequest
+		response.Msg = err.Error()
+		logrus.Error("GetJobInfoController, GetJob, error:", response.Msg)
+		c.JSON(response.Status, &response)
+		return
+	}
+
+	response.Data = jobInfo
+
+	c.JSON(response.Status, &response)
+}
+
+func UpdateJobController(c *gin.Context) {
 	var response = models.ControllerResponse{}
 	response.Status = http.StatusOK
 	response.Msg = ""
@@ -59,7 +104,7 @@ func UpdateJobController(c *gin.Context)  {
 	c.JSON(response.Status, &response)
 }
 
-func RemoveJobController(c *gin.Context)  {
+func RemoveJobController(c *gin.Context) {
 	var response = models.ControllerResponse{}
 	response.Status = http.StatusOK
 	response.Msg = ""
