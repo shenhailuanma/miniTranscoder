@@ -79,14 +79,14 @@
           <template slot-scope="scope">
             <el-button circle size="mini" type="warning" icon="el-icon-notebook-2"
                        @click="handleShowLogSelect(scope.row)"></el-button>
-            <el-button v-if="scope.row.Status === 'success'" circle size="mini" type="success" icon="el-icon-download"
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success'" circle size="mini" type="success" icon="el-icon-download"
                        @click="downloadFile(scope.row)"></el-button>
-            <el-button v-if="scope.row.Status === 'success'" circle size="mini" type="success"
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success'" circle size="mini" type="success"
                        icon="el-icon-caret-right"
                        @click="handlePlayVideoSelect(scope.row)"></el-button>
-            <el-button v-if="scope.row.Status === 'success'" circle size="mini" type="primary" icon="el-icon-setting"
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success'" circle size="mini" type="primary" icon="el-icon-setting"
                        @click="handleUpdateJob(scope.row)"></el-button>
-            <el-button v-if="scope.row.Status === 'success' || scope.row.Status === 'failed'" circle size="mini" type="danger" icon="el-icon-delete"
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success' || scope.row.Status === 'failed'" circle size="mini" type="danger" icon="el-icon-delete"
                        @click="handleRemoveJob(scope.row)"></el-button>
           </template>
         </el-table-column>
