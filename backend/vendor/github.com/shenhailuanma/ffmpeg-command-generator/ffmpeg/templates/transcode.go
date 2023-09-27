@@ -1,6 +1,5 @@
 package templates
 
-
 const TranscodeTemplate = `
 {{- range $inputIndex, $inputOne := .Inputs}}
 -i '{{$inputOne}}'
@@ -17,7 +16,13 @@ const TranscodeTemplate = `
 			{{- end }}
 			{{- if $streamOne.Video.Width}}
 				{{- if $streamOne.Video.Height}}
-					-s {{$streamOne.Video.Width}}x{{$streamOne.Video.Height}}
+					-vf scale={{$streamOne.Video.Width}}:{{$streamOne.Video.Height}}
+				{{- else }}
+					-vf scale={{$streamOne.Video.Width}}:-4
+				{{- end }}
+			{{- else }}
+				{{- if $streamOne.Video.Height}}
+					-vf scale=-4:{{$streamOne.Video.Height}}
 				{{- end }}
 			{{- end }}
 			{{- if $streamOne.Video.Fps}}
@@ -33,6 +38,9 @@ const TranscodeTemplate = `
 			{{- end }}
 			{{- if $streamOne.Audio.Channels}}
 		 		-ac {{$streamOne.Audio.Channels}}
+			{{- end }}
+			{{- if $streamOne.Audio.SampleRate}}
+		 		-ar {{$streamOne.Audio.SampleRate}}
 			{{- end }}
 		{{- end }}
     {{- end }}
