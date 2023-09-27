@@ -28,12 +28,12 @@ func init() {
 	logrus.Info("service.job init done")
 }
 
-func GetJobList() ([]models.Job, error) {
-	return GetAllJobsInfo()
-}
-
 func CreateJob(job models.Job) (string, error) {
 	return InitJob(job)
+}
+
+func GetJob(jobID string) (models.Job, error) {
+	return GetJobConfig(jobID)
 }
 
 func UpdateJob(jobID string, request models.JobUpdateRequest) error {
@@ -66,12 +66,12 @@ func loopDoJob() {
 		logrus.Info("loopDoJob, Command:", job.Command)
 
 		// update status
-		UpdateJobStatus(jobID, "doing")
+		UpdateJobStatus(jobID, models.JobStatusProgressing)
 
 		existCode, err := runJob(jobID, job.Command)
 		if err != nil {
 			logrus.Error("loopDoJob, GetJobInfo error:", err.Error())
-			UpdateJobStatus(jobID, "failed")
+			UpdateJobStatus(jobID, models.JobStatusError)
 			continue
 		}
 		logrus.Info("loopDoJob, job:", jobID, " over, exist code:", existCode)
@@ -82,7 +82,7 @@ func loopDoJob() {
 		UpdateJobProgress(jobID, 100)
 
 		// update status
-		UpdateJobStatus(jobID, "success")
+		UpdateJobStatus(jobID, models.JobStatusDone)
 
 		// update output file size
 		SyncJobOutputFileSize(jobID)
@@ -277,7 +277,6 @@ func ScriptRunCommon(jobID string, scriptPath string, logFilePath string) (uint3
 	return 0, nil
 }
 
-
 func parseFFmpegLogProgress(logPath string) int {
 	var progress = 0
 	var fileDuration = 0
@@ -310,7 +309,6 @@ func parseFFmpegLogProgress(logPath string) int {
 	}
 
 	logrus.Info("parseFFmpegLogProgress, fileDuration:", fileDuration, ", currentDuration:", currentDuration, ", progress", progress)
-
 
 	return progress
 }

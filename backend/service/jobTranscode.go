@@ -27,6 +27,7 @@ func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (string, error) {
 	job.SourceSize = utils.FileSize(job.Input)
 	job.Progress = 0
 	job.Description = job.SourceName
+	job.Status = models.JobStatusInit
 
 	jobID, err := CreateJob(job)
 	if err != nil {
@@ -51,11 +52,13 @@ func CreateTranscodeJob(request ffmpeg.FFmpegTranscodeRequest) (string, error) {
 	logrus.Info("CreateTranscodeJob, cmdString:", cmdString)
 
 	// update job info
+	job.Status = models.JobStatusQueuing
 	var jobInfo = models.JobUpdateRequest{
-		Command: &cmdString,
-		Output: &job.Output,
+		Command:      &cmdString,
+		Output:       &job.Output,
 		RelativePath: &job.RelativePath,
 		OutputFormat: &job.OutputFormat,
+		Status:       &job.Status,
 	}
 
 	err = UpdateJobInfo(jobID, jobInfo)

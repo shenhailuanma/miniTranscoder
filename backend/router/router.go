@@ -11,12 +11,12 @@ func Run(listenPort string) error {
 	r := gin.Default()
 
 	// web ui static files
-	r.StaticFile("/index.html", config.ConfigServicePathBase + "/ui/index.html")
-	r.StaticFile("/", config.ConfigServicePathBase + "/ui/index.html")
-	r.StaticFS("/static", http.Dir(config.ConfigServicePathBase + "/ui/static"))
+	r.StaticFile("/index.html", config.ConfigServicePathBase+"/ui/index.html")
+	r.StaticFile("/", config.ConfigServicePathBase+"/ui/index.html")
+	r.StaticFS("/static", http.Dir(config.ConfigServicePathBase+"/ui/static"))
 
 	// web ui download file
-	r.StaticFS("/" + config.ConfigVodFolder, http.Dir(config.ConfigDataOutputPath))
+	r.StaticFS("/"+config.ConfigVodFolder, http.Dir(config.ConfigDataOutputPath))
 
 	// healthz
 	//r.GET("/healthz", controllers.HealthzController)
@@ -33,10 +33,12 @@ func Run(listenPort string) error {
 		 * @api {GET} /api/jobs 01-GetJobList
 		 * @apiName GetJobList
 		 * @apiGroup API
-		 * @apiDescription Get all jobs
+		 * @apiDescription Get job list
 		 */
 		apiGroup.GET("/jobs", controllers.GetJobsController)
+		apiGroup.GET("/jobs/undone", controllers.GetUndoneJobsController)
 
+		apiGroup.GET("/job/:id", controllers.GetJobInfoController)
 		apiGroup.DELETE("/job/:id", controllers.RemoveJobController)
 
 		apiGroup.PUT("/job/:id", controllers.UpdateJobController)
@@ -78,7 +80,7 @@ func Run(listenPort string) error {
 		    ]
 		}
 		 *
-		 */
+		*/
 		apiGroup.POST("/job/transcode", controllers.CreateTranscodeJobController)
 	}
 

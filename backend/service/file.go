@@ -97,7 +97,6 @@ func GetAllJobsInfo() ([]models.Job, error) {
 		output = append(output, jobOne)
 	}
 
-
 	return output, err
 }
 
@@ -203,10 +202,12 @@ func UpdateJobInfo(jobID string, request models.JobUpdateRequest) error {
 	if request.Snapshot != nil {
 		jobInfo.Snapshot = *request.Snapshot
 	}
+	if request.Custom != nil {
+		jobInfo.Custom = *request.Custom
+	}
 
 	return SetJobConfig(jobID, jobInfo)
 }
-
 
 func GetJobFolders() ([]string, error) {
 	var output = []string{}
@@ -229,7 +230,6 @@ func GetJobFolders() ([]string, error) {
 	for _, jobIDOne := range jobIDs {
 		output = append(output, fmt.Sprintf("%d", jobIDOne))
 	}
-
 
 	return output, nil
 }

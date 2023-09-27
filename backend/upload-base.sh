@@ -77,14 +77,14 @@ sshpass -p $Password scp -P ${RemotePort} ${TargetBin}.tar.gz ${RemoteServer}:/t
 check_error "Copy ${TargetBin}.tar.gz to remote server:${RemoteServer}"
 
 
-log_info "Stop the service ${TargetBin}.service"
-sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "sudo systemctl stop ${TargetBin}.service"
-
-log_info "Backup ${TargetBin}"
-sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "cd /tmp && tar zxvf ${TargetBin}.tar.gz"
-sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "sudo cp -f /opt/bin/${TargetBin} /opt/bin/${TargetBin}.${BACKUP_TIME}"
-sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "sudo cp -f /tmp/${TargetBin} /opt/bin/${TargetBin}"
-
-log_info "Start the service ${TargetBin}.service"
-sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "sudo systemctl start ${TargetBin}.service"
-check_error "Start the service ${TargetBin}.service"
+#log_info "Stop the service ${TargetBin}.service"
+#sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "sudo systemctl stop ${TargetBin}.service"
+#
+#log_info "Backup ${TargetBin}"
+#sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "cd /tmp && tar zxvf ${TargetBin}.tar.gz"
+#sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "sudo cp -f /opt/bin/${TargetBin} /opt/bin/${TargetBin}.${BACKUP_TIME}"
+#sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "sudo cp -f /tmp/${TargetBin} /opt/bin/${TargetBin}"
+#
+#log_info "Start the service ${TargetBin}.service"
+#sshpass -p $Password ssh -p ${RemotePort} ${RemoteServer} "sudo systemctl start ${TargetBin}.service"
+#check_error "Start the service ${TargetBin}.service"

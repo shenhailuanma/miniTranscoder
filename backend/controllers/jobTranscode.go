@@ -9,9 +9,10 @@ import (
 	"github.com/shenhailuanma/miniTranscoder/service"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strings"
 )
 
-func CreateTranscodeJobController(c *gin.Context)  {
+func CreateTranscodeJobController(c *gin.Context) {
 	var response = models.ControllerResponse{}
 	response.Status = http.StatusOK
 	response.Msg = ""
@@ -38,8 +39,42 @@ func CreateTranscodeJobController(c *gin.Context)  {
 	}
 
 	// prepare data
-	for index,_ := range request.Inputs {
-		request.Inputs[index] = config.ConfigDataUploadPath + "/" + request.Inputs[index]
+	for inputIndex, inputOne := range request.Inputs {
+		/*
+			- HTTP(S): http://,https://
+			- RTMP: rtmp://, rtmpt://, rtmpe://, rtmpte://, rtmps://, rtmpts://
+			- RTSP: rtsp://
+			- MMS: mmsh://, mmst://, mms://, mmsu://
+			- TCP: tcp://
+			- UDP: udp://
+			- RTP: rtp://, rtps://
+			- SMB: smb://
+		*/
+		if strings.HasPrefix(inputOne, "http://") ||
+			strings.HasPrefix(inputOne, "https://") ||
+			strings.HasPrefix(inputOne, "rtmp://") ||
+			strings.HasPrefix(inputOne, "rtmpt://") ||
+			strings.HasPrefix(inputOne, "rtmpe://") ||
+			strings.HasPrefix(inputOne, "rtmpte://") ||
+			strings.HasPrefix(inputOne, "rtmps://") ||
+			strings.HasPrefix(inputOne, "rtmpts://") ||
+			strings.HasPrefix(inputOne, "rtsp://") ||
+			strings.HasPrefix(inputOne, "mmsh://") ||
+			strings.HasPrefix(inputOne, "mmst://") ||
+			strings.HasPrefix(inputOne, "mms://") ||
+			strings.HasPrefix(inputOne, "mmsu://") ||
+			strings.HasPrefix(inputOne, "tcp://") ||
+			strings.HasPrefix(inputOne, "udp://") ||
+			strings.HasPrefix(inputOne, "rtp://") ||
+			strings.HasPrefix(inputOne, "rtps://") ||
+			strings.HasPrefix(inputOne, "smb://") ||
+			strings.HasPrefix(inputOne, "ftp://") {
+
+			// support stream type
+			logrus.Info("CreateTranscodeJobController, input:", inputOne)
+		} else {
+			request.Inputs[inputIndex] = config.ConfigDataUploadPath + "/" + inputOne
+		}
 	}
 
 	if len(request.Outputs) == 0 {
