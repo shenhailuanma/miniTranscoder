@@ -44,8 +44,6 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/shenhailuanma/ffmpeg-command-generator v1.0.4 h1:x9SbDHRm9aBx7a199kNO5yxTB1raf7LK2AM3Fyui0QI=
 github.com/shenhailuanma/ffmpeg-command-generator v1.0.4/go.mod h1:M25iF2wTM4aD5ML+NhViK+gUJpPvsklgyq0fARVeaYE=
-github.com/shenhailuanma/goutils v1.2.4 h1:aJRO6nJ2M6t1mr2guPu8MHo/yK+yfvawZ761Lld8T4w=
-github.com/shenhailuanma/goutils v1.2.4/go.mod h1:l0dAVJKxyX9sf/A0AwbmLAq3a9Sj9CptB8xI59vnUcw=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/sirupsen/logrus v1.7.0 h1:ShrD1U9pZB12TX0cVy0DtePoCH97K8EtX+mg7ZARUtM=
 github.com/sirupsen/logrus v1.7.0/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
