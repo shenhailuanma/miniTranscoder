@@ -46,3 +46,14 @@ export const apiUpdateJob = (jobID, data) => {
     data: data,
   })
 }
+
+export const apiGetJobData = (jobID, data) => {
+  let url = `/vod/${jobID}/${data}`;
+  return request({
+    url: url,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+}

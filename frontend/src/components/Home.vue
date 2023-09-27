@@ -70,22 +70,23 @@
             <i v-else class="el-icon-circle-close" style="font-size: 18px"></i>
           </template>
         </el-table-column>
+        `
         <el-table-column
           prop="action"
           label="Action"
           align="center"
-          width="180">
+          width="220">
           <template slot-scope="scope">
-            <!-- <el-button circle size="mini" type="warning" icon="el-icon-tickets"></el-button>-->
-            <el-button circle size="mini" type="primary" icon="el-icon-download"
+            <el-button circle size="mini" type="warning" icon="el-icon-notebook-2"
+                       @click="handleShowLogSelect(scope.row)"></el-button>
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success'" circle size="mini" type="success" icon="el-icon-download"
                        @click="downloadFile(scope.row)"></el-button>
-            <el-button circle size="mini" type="warning" icon="el-icon-caret-right"
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success'" circle size="mini" type="success"
+                       icon="el-icon-caret-right"
                        @click="handlePlayVideoSelect(scope.row)"></el-button>
-<!--            <el-button circle size="mini" type="primary" icon="el-icon-notebook-2"-->
-<!--                       @click="handlePlayVideoSelect(scope.row)"></el-button>-->
-            <el-button circle size="mini" type="primary" icon="el-icon-setting"
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success'" circle size="mini" type="primary" icon="el-icon-setting"
                        @click="handleUpdateJob(scope.row)"></el-button>
-            <el-button circle size="mini" type="danger" icon="el-icon-delete"
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success' || scope.row.Status === 'failed'" circle size="mini" type="danger" icon="el-icon-delete"
                        @click="handleRemoveJob(scope.row)"></el-button>
           </template>
         </el-table-column>
@@ -110,18 +111,44 @@
         <el-button size="small" type="primary">Select File</el-button>
       </el-upload>
 
-      <!--      <div>-->
-      <!--        <el-divider content-position="left">Configurations</el-divider>-->
-      <!--        <el-radio-group v-model="userTransParams.preset">-->
-      <!--          <el-radio label="veryslow">High</el-radio>-->
-      <!--          <el-radio label="medium">Normal</el-radio>-->
-      <!--        </el-radio-group>-->
-      <!--      </div>-->
+      <div v-if="fileList.length > 0">
+        <el-divider content-position="left">Configurations</el-divider>
+        <el-form label-position="right" label-width="100px" :model="userTransParams">
+          <el-form-item label="VideoSize">
+            <el-radio-group v-model="userTransParams.height">
+              <el-radio label="0">Origin</el-radio>
+              <el-radio label="2160">4K(2160P)</el-radio>
+              <el-radio label="1440">2K(1440P)</el-radio>
+              <el-radio label="1080">1080P</el-radio>
+              <el-radio label="720">720P</el-radio>
+              <el-radio label="480">480P</el-radio>
+              <el-radio label="360">360P</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="Compression">
+            <el-radio-group v-model="userTransParams.preset">
+              <el-radio label="veryslow">High</el-radio>
+              <el-radio label="medium">Normal</el-radio>
+              <el-radio label="veryfast">Low</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+      </div>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleUploadDialogClose">Cancel</el-button>
         <el-button :disabled="fileList.length === 0" type="primary" @click="handleUploadJobSubmit">Submit</el-button>
       </span>
+    </el-dialog>
+
+    <el-dialog :visible.sync="dialogShowLogVisible"
+               title="Log"
+               width="80%"
+               top="2vh"
+               :before-close="handleShowLogDialogClose">
+      <div>
+        <codemirror v-model="jobLogData" :options="fileRawDataCmOptions"></codemirror>
+      </div>
     </el-dialog>
 
     <el-dialog :visible.sync="dialogPlayVideoVisible"
@@ -176,27 +203,45 @@
 </template>
 
 <script>
+import { codemirror } from "vue-codemirror";
+import "codemirror/lib/codemirror.css";
+
 import FileSaver from "file-saver";
-import {apiGetJobList, apiCreateJobTranscode, apiRemoveJob, apiUpdateJob} from '@/api/job';
+import {apiGetJobList, apiCreateJobTranscode, apiRemoveJob, apiUpdateJob, apiGetJobData} from '@/api/job';
 import {objectDeepCopy} from '@/utils/utils';
 
 export default {
   name: "Home",
+  components: {
+    codemirror,
+  },
   data() {
     return {
       msg: "Mini Transcoder",
       jobList: [],
       dialogUploadVisible: false,
+      dialogShowLogVisible: false,
       dialogPlayVideoVisible: false,
       dialogRemoveJobVisible: false,
       dialogUpdateJobVisible: false,
       fileList: [],
       heartbeatTimer: null,
       playVideoUrl: "",
+      jobLogData: "",
+      fileRawDataCmOptions: {
+        tabSize: 4,
+        mode: "text/x-go",
+        theme: "default",
+        styleActiveLine: true,
+        lineNumbers: true,
+        line: true,
+        readOnly: true,
+      },
       selectedRow: {},
       jobCount: 0,
       userTransParams: {
-        preset: "veryslow"
+        preset: "veryslow",
+        height: "0",
       },
       transParams: {
         inputs: [],
@@ -208,14 +253,17 @@ export default {
                 kind: "video",
                 video: {
                   codec: "h264",
-                  preset: "veryslow"
+                  preset: "veryslow",
+                  fps: 25,
+                  height: 0,
                 }
               },
               {
                 kind: "audio",
                 audio: {
                   codec: "aac",
-                  channels: 2
+                  channels: 2,
+                  sample_rate: 44100,
                 }
               }
             ]
@@ -251,6 +299,10 @@ export default {
     showUploadDialog() {
       this.dialogUploadVisible = true;
       this.fileList = [];
+      this.userTransParams = {
+        preset: "veryslow",
+        height: "0",
+      };
     },
     handleOnRemove(file, fileList) {
       console.log("handleOnRemove, file:", file);
@@ -281,6 +333,9 @@ export default {
         jobData.inputs = [];
         jobData.inputs.push(this.fileList[i].name);
 
+        jobData.outputs[0].streams[0].video.preset = this.userTransParams.preset;
+        jobData.outputs[0].streams[0].video.height = Number(this.userTransParams.height);
+
         // create job
         apiCreateJobTranscode(jobData).then(response => {
           console.log("handleUploadJobSubmit, apiCreateJobTranscode response:", response);
@@ -292,6 +347,22 @@ export default {
       }
 
       this.dialogUploadVisible = false;
+    },
+    handleShowLogDialogClose() {
+      this.dialogShowLogVisible = false;
+      this.jobLogData = "";
+    },
+    handleShowLogSelect(row) {
+      this.dialogShowLogVisible = true;
+      this.jobLogData = "";
+      // get log
+      apiGetJobData(row.ID, "job.log").then(response => {
+        console.log("handleShowLogSelect, apiGetJobData, response:", response)
+        this.jobLogData = response;
+      }).catch(err => {
+        console.log("handleShowLogSelect, apiGetJobData, err:", err)
+      })
+
     },
     handlePlayVideoSelect(row) {
       this.dialogPlayVideoVisible = true;
