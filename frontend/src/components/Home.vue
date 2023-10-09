@@ -86,7 +86,7 @@
                        @click="handlePlayVideoSelect(scope.row)"></el-button>
             <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success'" circle size="mini" type="primary" icon="el-icon-setting"
                        @click="handleUpdateJob(scope.row)"></el-button>
-            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success' || scope.row.Status === 'failed'" circle size="mini" type="danger" icon="el-icon-delete"
+            <el-button v-if="scope.row.Status === 'done' || scope.row.Status === 'success' || scope.row.Status === 'failed' || scope.row.Status === 'error'" circle size="mini" type="danger" icon="el-icon-delete"
                        @click="handleRemoveJob(scope.row)"></el-button>
           </template>
         </el-table-column>
