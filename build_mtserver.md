@@ -66,3 +66,9 @@ go mod vendor
 GOOS=linux GOARCH=amd64 go build -mod=vendor -tags netgo -ldflags "-s -w" -o mtserver main.go
 
 ```
+
+
+
+```sh
+docker buildx build --push --platform linux/amd64,linux/arm64 -t shenhailuanma/minitranscoder:1.0.11 .
+```

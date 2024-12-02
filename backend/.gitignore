@@ -2,3 +2,6 @@ main
 mtserver
 /miniTranscoder
 mtserver.tar.gz
+
+mtserver-amd64
+mtserver-arm64
