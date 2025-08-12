@@ -2,6 +2,8 @@
 
 Mini simple transcode service
 
+![alt text](demo.gif)
+
 ## Quick start
 
 https://hub.docker.com/r/shenhailuanma/minitranscoder
