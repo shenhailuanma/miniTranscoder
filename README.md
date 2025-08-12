@@ -2,7 +2,7 @@
 
 Mini simple transcode service
 
-![alt text](demo.gif)
+![](demo.gif)
 
 ## Quick start
 
