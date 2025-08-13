@@ -1,6 +1,6 @@
 # miniTranscoder
 
-Mini simple transcode service
+Mini Transcoder
 
 ![](demo.gif)
 
